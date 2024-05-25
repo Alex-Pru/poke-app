@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 3
+      Pokédex
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,9 +9,31 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title size="large">Pokedéx</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+  <ion-card>
+    <ion-button (click)="clearLocalstorage()" expand="solid"  fill="solid">Reiniciar game</ion-button>
+  </ion-card>
+  <ion-grid class="grid">
+    <ion-row >
+      <ion-col size="1" *ngFor="let pokemon of this.pokedexList">
+        <ion-card *ngIf="pokemon.nome">
+          <ion-card-header>
+            <ion-card-title>{{pokemon.nome}}</ion-card-title>
+          </ion-card-header>
+        <ion-card-content>
+          <ion-img src={{pokemon.img}}></ion-img>
+          <ion-list>
+            <ion-item><ion-card-subtitle color="success"> Vitórias: {{pokemon.wins}}</ion-card-subtitle></ion-item>
+            <ion-item><ion-card-subtitle color="danger"> Derrotas: {{pokemon.loses}} </ion-card-subtitle></ion-item>
+            <ion-item><ion-card-subtitle color="warning">Empates: {{pokemon.draws}}</ion-card-subtitle></ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

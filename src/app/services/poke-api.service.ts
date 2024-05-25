@@ -6,7 +6,9 @@ import { of } from 'rxjs';
   providedIn: 'root'
 })
 export class PokeAPIService {
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient) {
+    this.loadProgress()
+   }
 
  
   async getPokeAPIService(id: number = 1 + (Math.floor(Math.random() * 100))){{
@@ -38,30 +40,77 @@ export class PokeAPIService {
       img: pokeData.sprites.front_default,
       abilities: pokeData.abilities.length,
       height: pokeData.height,
-      weight: pokeData.weight
+      weight: pokeData.weight,
+      wins: 0,
+      loses: 0,
+      draws: 0
     }
 
-    this.pokemonsEncontrados.push(newPokemon)
+    if(this.checkExistance(newPokemon).exists){
+      const position = this.checkExistance(newPokemon).position
+      const existantPokemon = this.pokemonsEncontrados.slice(position, position + 1)
+      this.pokemonsEncontrados.splice(position, position + 1)
+      this.pokemonsEncontrados.push(existantPokemon[0])
+    }
+    else{
+      this.pokemonsEncontrados.push(newPokemon)
+    }
+    this.saveProgress(this.pokemonsEncontrados, 'pokedex')
     return newPokemon
   }
 
-  embate(abilitiesEnemy: number, abilitiesAlly: number){
-    console.log(abilitiesAlly, abilitiesEnemy)
-    if(abilitiesAlly == 0){
+  checkExistance(poke: any){
+    let result = {exists: false, position: 0}
+    for(let index = 0; index < this.pokemonsEncontrados.length; index++){
+      if(this.pokemonsEncontrados[index].nome == poke.nome){
+        result = {exists: true, position: index}
+      }
+    }
+    return result
+  }
+
+  saveProgress(array: any[], str: string) {
+    if(array.length > 0){
+      localStorage.removeItem(str)
+      localStorage.setItem(str, JSON.stringify(array))
+    }
+    else{}
+  }
+
+  embate(enemy: any, ally: any){
+    const abilitiesAlly = ally.abilities
+    const abilitiesEnemy = enemy.abilities
+    const ultimo = this.pokemonsEncontrados.length - 1
+    const penultimo = ultimo - 1
+
+    
+    if(abilitiesAlly == 0 || abilitiesAlly == undefined){
       return {resultado: 'FUGIU', cor: ''}
     }
     else if(abilitiesEnemy < abilitiesAlly){
+      this.pokemonsEncontrados[ultimo].loses++
+      this.pokemonsEncontrados[penultimo].wins++
       return {resultado: 'PERDEU', cor: 'success'}
     }
     else if(abilitiesEnemy == abilitiesAlly){
+      this.pokemonsEncontrados[ultimo].draws++
+      this.pokemonsEncontrados[penultimo].draws++
       return {resultado: 'EMPATE', cor: 'warning'}
     }
     else if (abilitiesEnemy > abilitiesAlly){
+      this.pokemonsEncontrados[ultimo].wins++
+      this.pokemonsEncontrados[penultimo].loses++
       return {resultado: 'GANHOU', cor: 'danger'}
     }
     else{
-      console.log('Unexpected situation')
       return {resultado: 'Something went wrong', cor: ''}
     }
+    
   } 
+
+  loadProgress(){
+    if(JSON.parse(localStorage.getItem("pokedex") || "{}")){
+      this.pokemonsEncontrados = JSON.parse(localStorage.getItem("pokedex") || "[]")
+    }
+  }
 }

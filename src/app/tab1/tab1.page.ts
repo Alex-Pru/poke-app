@@ -42,6 +42,8 @@ export class Tab1Page {
     this.pokemonEncontrado = newPokemon
   }
 
-  constructor(private pokeAPIService: PokeAPIService, private viaCEPAPI: ViaCEPService) {}
+  constructor(private pokeAPIService: PokeAPIService, private viaCEPAPI: ViaCEPService) {
+    
+  }
 
 }

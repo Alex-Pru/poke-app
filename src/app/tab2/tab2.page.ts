@@ -22,12 +22,12 @@ export class Tab2Page implements AfterViewInit {
       const antiPenultimo = pokemonsEncontrados.length - 1
       if (!pokemonsEncontrados[antiPenultimo] || pokemonsEncontrados[antiPenultimo] == undefined){
         const pokemonBatalha = await this.buscarBatalha();
-        const {resultado, cor} = this.pokeService.embate(pokemonBatalha.abilities, 0)
+        const {resultado, cor} = this.pokeService.embate(pokemonBatalha, {})
         this.resultadoBatalha = resultado
         this.corResultado = cor
       } else {
             const pokemonBatalha = await this.buscarBatalha();
-            const {resultado, cor} = this.pokeService.embate(pokemonBatalha.abilities, pokemonsEncontrados[antiPenultimo].abilities)
+            const {resultado, cor} = this.pokeService.embate(pokemonBatalha, pokemonsEncontrados[antiPenultimo])
             this.resultadoBatalha = resultado
             this.corResultado = cor
       }
